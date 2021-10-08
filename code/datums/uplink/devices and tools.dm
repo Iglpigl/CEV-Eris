@@ -46,7 +46,7 @@
 	name = "Heavy Armor Vest"
 	item_cost = 6
 	path = /obj/item/clothing/suit/storage/vest/merc
-	
+
 /datum/uplink_item/item/tools/full_heavy_vest
 	name = "Fullbody Heavy Armor Vest"
 	item_cost = 12
@@ -96,7 +96,7 @@
 /datum/uplink_item/item/tools/thermal_lens
 	name = "Thermal Imaging Lenses"
 	item_cost = 12
-	path = /obj/item/clothing/glasses/powered/thermal/lens
+	path = /obj/item/clothing/glasses/attachable_lenses
 
 /datum/uplink_item/item/tools/powersink
 	name = "Powersink (DANGER!)"
