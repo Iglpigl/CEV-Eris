@@ -126,21 +126,13 @@
 	name = "sheath"
 	build_path = /obj/item/storage/pouch/holster/belt/sheath
 
-/datum/design/bioprinter/leather/holster/knife
-	name = "throwing knife pouch"
-	build_path = /obj/item/storage/pouch/holster/belt/knife
-
 /datum/design/bioprinter/leather/holster/accessory
 	name = "concealed carry holster"
 	build_path = /obj/item/clothing/accessory/holster
 
-/datum/design/bioprinter/leather/holster/accessory/scabbard
+/datum/design/bioprinter/leather/holster/scabbard
 	name = "scabbard"
 	build_path = /obj/item/clothing/accessory/holster/scabbard
-
-/datum/design/bioprinter/leather/holster/accessory/knife
-	name = "throwing knife rig"
-	build_path = /obj/item/clothing/accessory/holster/knife
 
 /datum/design/bioprinter/belt
 	materials = list(MATERIAL_BIOMATTER = 30)
