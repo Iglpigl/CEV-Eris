@@ -105,9 +105,9 @@ var/list/global/tank_gauge_cache = list()
 	if (!(src.air_contents))
 		return
 
-	ui_interact(user)
+	nano_ui_interact(user)
 
-/obj/item/tank/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
+/obj/item/tank/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
 	var/mob/living/carbon/location = null
 
 	if(istype(loc, /obj/item/rig))		// check for tanks in rigs
@@ -284,15 +284,8 @@ var/list/global/tank_gauge_cache = list()
 		air_contents.react()
 
 		pressure = air_contents.return_pressure()
-		var/range = (pressure-TANK_FRAGMENT_PRESSURE)/TANK_FRAGMENT_SCALE
-
-		explosion(
-			get_turf(loc),
-			round(min(BOMBCAP_DVSTN_RADIUS, range*0.25)),
-			round(min(BOMBCAP_HEAVY_RADIUS, range*0.50)),
-			round(min(BOMBCAP_LIGHT_RADIUS, range*1.00)),
-			round(min(BOMBCAP_FLASH_RADIUS, range*1.50)),
-			)
+		var/power = (pressure-TANK_FRAGMENT_PRESSURE)/TANK_FRAGMENT_SCALE
+		explosion(get_turf(src), power, 10, EFLAG_ADDITIVEFALLOFF)
 		qdel(src)
 
 	else if(pressure > TANK_RUPTURE_PRESSURE)

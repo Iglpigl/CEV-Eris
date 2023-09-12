@@ -92,7 +92,7 @@ I said no!
 /datum/recipe/brainburger
 	items = list(
 		/obj/item/reagent_containers/food/snacks/bun,
-		/obj/item/organ/internal/brain
+		/obj/item/organ/internal/vital/brain
 	)
 	result = /obj/item/reagent_containers/food/snacks/brainburger
 
@@ -194,6 +194,20 @@ I said no!
 		/obj/item/reagent_containers/food/snacks/egg
 	)
 	result = /obj/item/reagent_containers/food/snacks/kaiserburger
+
+/datum/recipe/wormburger
+	items = list(
+		/obj/item/reagent_containers/food/snacks/moecube/worm,
+		/obj/item/reagent_containers/food/snacks/bun
+	)
+	result = /obj/item/reagent_containers/food/snacks/wormburger
+
+/datum/recipe/geneburger
+	items = list(
+		/obj/item/reagent_containers/food/snacks/moecube,
+		/obj/item/reagent_containers/food/snacks/bun
+	)
+	result = /obj/item/reagent_containers/food/snacks/geneburger
 
 /datum/recipe/hotdog
 	items = list(
@@ -958,12 +972,6 @@ I said no!
 	)
 	result = /obj/item/reagent_containers/food/snacks/tofurkey
 
-// Fuck Science!
-/datum/recipe/ruinedvirusdish
-	items = list(
-		/obj/item/virusdish
-	)
-	result = /obj/item/ruinedvirusdish
 
 //////////////////////////////////////////
 // bs12 food port stuff
@@ -1057,5 +1065,5 @@ I said no!
 	result = /obj/item/reagent_containers/food/snacks/sliceable/applecake
 
 /datum/recipe/cake/brain
-	items = list(/obj/item/organ/internal/brain)
+	items = list(/obj/item/organ/internal/vital/brain)
 	result = /obj/item/reagent_containers/food/snacks/sliceable/braincake

@@ -20,6 +20,9 @@
 
 	price_tag = 20
 
+	health = 600
+	maxHealth = 600
+
 	var/tool_in_use = FALSE
 
 	var/force_upgrade_mults = 1
@@ -51,7 +54,7 @@
 
 	//Variables used for tool degradation
 	health = 0		// Health of a tool.
-	max_health = 1000
+	maxHealth = 1000
 	var/degradation = 0.8 //If nonzero, the health of the tool decreases by this amount after each tool operation
 	var/health_threshold  = 40 // threshold in percent on which tool health stops dropping
 	var/lastNearBreakMessage = 0 // used to show messages that tool is about to break
@@ -90,8 +93,8 @@
 	if(use_stock_cost)
 		stock = max_stock
 
-	if(max_health)
-		health = max_health
+	if(maxHealth)
+		health = maxHealth
 
 	update_icon()
 	return
@@ -116,7 +119,7 @@
 	return ..()
 
 /obj/item/tool/proc/adjustToolHealth(amount, user)
-	health = min(max_health, max(max_health * (health_threshold/100), health + amount))
+	health = min(maxHealth, max(maxHealth * (health_threshold/100), health + amount))
 	if(!isBroken && health == 0)
 		breakTool()
 		isBroken = TRUE
@@ -184,7 +187,7 @@
 	return
 
 
-/obj/item/tool/ui_data(mob/user)
+/obj/item/tool/nano_ui_data(mob/user)
 	var/list/data = list()
 
 	if(tool_qualities)
@@ -210,14 +213,14 @@
 		data["use_power_cost_max"] = initial(use_power_cost) * 10
 
 	if(use_fuel_cost)
-		data["fuel"] = reagents ? reagents.ui_data() : null
+		data["fuel"] = reagents ? reagents.nano_ui_data() : null
 		data["max_fuel"] = max_fuel
 		data["use_fuel_cost"] = use_fuel_cost
 		data["use_fuel_cost_state"] = initial(use_fuel_cost) > use_fuel_cost ? "good" : initial(use_fuel_cost) < use_fuel_cost ? "bad" : ""
 		data["use_fuel_cost_max"] = initial(use_fuel_cost) * 10
 
 	data["health"] = health
-	data["health_max"] = max_health
+	data["health_max"] = maxHealth
 	data["health_threshold"] = health_threshold
 
 	data["force"] = force
@@ -229,6 +232,14 @@
 
 	data["upgrades_max"] = max_upgrades
 
+	data["edge"] = edge
+	data["sharp"] = sharp
+	data["extended_reach"] = extended_reach
+	data["forced_broad_strike"] = forced_broad_strike
+	data["screen_shake"] = screen_shake
+	data["push_attack"] = push_attack
+	data["w_class"] = w_class
+
 	// it could be done with catalog using one line but whatever
 	if(item_upgrades.len)
 		data["attachments"] = list()
@@ -237,8 +248,8 @@
 
 	return data
 
-/obj/item/tool/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = 1, state = GLOB.default_state)
-	var/list/data = ui_data(user)
+/obj/item/tool/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = 1, state = GLOB.default_state)
+	var/list/data = nano_ui_data(user)
 
 	var/datum/asset/toolupgrageds = get_asset_datum(/datum/asset/simple/tool_upgrades)
 	if (toolupgrageds.send(user.client))
@@ -269,7 +280,7 @@
 	var/list/tm = matter.Copy()
 	//Every point of damage reduces matter by 2% of total
 	for(var/mat in tm)
-		tm[mat] *= health / max_health
+		tm[mat] *= health / maxHealth
 
 	return tm
 
@@ -349,7 +360,7 @@
 		// the worse tool condition - the more time required
 		if(T && T.degradation)
 			// so basically we adding time based on percent of missing health multiplied by ADDITIONAL_TIME_LOWHEALTH for easier balancing
-			time_to_finish = time_to_finish + (time_to_finish/100 * (ADDITIONAL_TIME_LOWHEALTH * (1 -(T.health/T.max_health))))
+			time_to_finish = time_to_finish + (time_to_finish/100 * (ADDITIONAL_TIME_LOWHEALTH * (1 -(T.health/T.maxHealth))))
 
 	if((instant_finish_tier < get_tool_quality(required_quality)) || time_to_finish < 0)
 		time_to_finish = 0
@@ -429,17 +440,17 @@
 		T.breakTool(user)
 		return TOOL_USE_FAIL
 	else if(T && !T.health_threshold)
-		if(user.stats.getStat(STAT_MEC) >= STAT_LEVEL_BASIC && T.health < T.max_health/100 * 5)// tool health is < 5%
+		if(user.stats.getStat(STAT_MEC) >= STAT_LEVEL_BASIC && T.health < T.maxHealth/100 * 5)// tool health is < 5%
 			if(T.lastNearBreakMessage > world.time + 60 SECONDS) // once in 1 minute
 				T.lastNearBreakMessage = world.time
 				to_chat(user, SPAN_DANGER("Your [src.name] is about to fall apart."))
-		else if(user.stats.getStat(STAT_MEC) >= STAT_LEVEL_ADEPT && T.health < T.max_health/100 * 15) // tool health is < 15%
+		else if(user.stats.getStat(STAT_MEC) >= STAT_LEVEL_ADEPT && T.health < T.maxHealth/100 * 15) // tool health is < 15%
 			if(T.lastNearBreakMessage > world.time + 300 SECONDS) // once in 5 minutes
 				T.lastNearBreakMessage = world.time
 				to_chat(user, SPAN_WARNING("Some parts in your [src.name] are reeling."))
 		else
 			//lets give peasants a chance
-			if(T.health < T.max_health/100 * 5 && prob(10))// tool health is < 5% and chance a 10% to notice
+			if(T.health < T.maxHealth/100 * 5 && prob(10))// tool health is < 5% and chance a 10% to notice
 				if(T.lastNearBreakMessage > world.time + 60 SECONDS) // once in 1 minute
 					T.lastNearBreakMessage = world.time
 					to_chat(user, SPAN_DANGER("Your [src.name] is about to fall apart."))
@@ -820,7 +831,7 @@
 	prefixes = list()
 
 	//Now lets have each upgrade reapply its modifications
-	SEND_SIGNAL(src, COMSIG_APPVAL, src)
+	SEND_SIGNAL_OLD(src, COMSIG_APPVAL, src)
 
 	for(var/prefix in prefixes)
 		name = "[prefix] [name]"
@@ -862,17 +873,17 @@
 			to_chat(user, SPAN_NOTICE(TU.name))
 
 	if(health)
-		if(health > max_health * 0.95)
+		if(health > maxHealth * 0.95)
 			return
-		else if(health > max_health * 0.80)
+		else if(health > maxHealth * 0.80)
 			to_chat(user, "It has a few light scratches.")
-		else if(health > max_health * 0.40)
+		else if(health > maxHealth * 0.40)
 			to_chat(user, SPAN_NOTICE("It shows minor signs of stress and wear."))
-		else if(health > max_health * 0.20)
+		else if(health > maxHealth * 0.20)
 			to_chat(user, SPAN_WARNING("It looks a bit cracked and worn."))
-		else if(health > max_health * 0.10)
+		else if(health > maxHealth * 0.10)
 			to_chat(user, SPAN_WARNING("Whatever use this tool once had is fading fast."))
-		else if(health > max_health * 0.05)
+		else if(health > maxHealth * 0.05)
 			to_chat(user, SPAN_WARNING("Attempting to use this thing as a tool is probably not going to work out well."))
 		else
 			to_chat(user, SPAN_DANGER("It's falling apart. This is one slip away from just being a pile of assorted trash."))
@@ -902,6 +913,7 @@
 				var/obj/item/weldpack/P = O
 				P.explode()
 			return
+/*
 		else if(istype(O, /mob/living/carbon/superior_animal/roach/benzin))
 			var/mob/living/carbon/superior_animal/roach/benzin/B = O
 			if(B.stat != DEAD)
@@ -912,6 +924,7 @@
 					to_chat(user, SPAN_NOTICE("[src] refueled"))
 					playsound(src.loc, 'sound/effects/refill.ogg', 50, 1, -6)
 			return
+*/
 		if(switched_on)
 			var/turf/location = get_turf(user)
 			if(isliving(O))
@@ -928,7 +941,7 @@
 				user.visible_message(SPAN_NOTICE("[user] begins repairing \the [O] with the [src]!"))
 				//Toolception!
 				if(use_tool(user, T, 60, QUALITY_ADHESIVE, FAILCHANCE_EASY, STAT_MEC))
-					T.adjustToolHealth(T.max_health * 0.8 + (user.stats.getStat(STAT_MEC)/2)/100, user)
+					T.adjustToolHealth(T.maxHealth * 0.8 + (user.stats.getStat(STAT_MEC)/2)/100, user)
 					if(user.stats.getStat(STAT_MEC) > STAT_LEVEL_BASIC/2)
 						to_chat(user, SPAN_NOTICE("You knowledge in tools helped you repair it better."))
 					refresh_upgrades()
@@ -1088,7 +1101,8 @@
 							QUALITY_SHOVELING = 100,
 							QUALITY_DIGGING = 100,
 							QUALITY_EXCAVATION = 100,
-							QUALITY_CUTTING = 100)
+							QUALITY_CUTTING = 100,
+							QUALITY_HAMMERING = 100)
 
 #undef ADDITIONAL_TIME_LOWHEALTH
 
@@ -1102,4 +1116,4 @@
 /obj/item/tool/ui_action_click(mob/living/user, action_name)
 	switch(action_name)
 		if("Tool information")
-			ui_interact(user)
+			nano_ui_interact(user)

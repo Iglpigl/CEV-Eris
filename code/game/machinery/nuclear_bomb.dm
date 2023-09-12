@@ -148,7 +148,7 @@ var/bomb_set
 		if (panel_open)
 			wires.Interact(user)
 		else
-			ui_interact(user)
+			nano_ui_interact(user)
 	else if (deployable)
 		if(removal_stage < 5)
 			src.anchored = TRUE
@@ -161,7 +161,7 @@ var/bomb_set
 			update_icon()
 	return
 
-/obj/machinery/nuclearbomb/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
+/obj/machinery/nuclearbomb/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
 	var/data[0]
 	data["hacking"] = 0
 	data["auth"] = is_auth(user)
@@ -328,8 +328,8 @@ var/bomb_set
 	security_state.set_security_level(previous_level)
 	update_icon()
 
-/obj/machinery/nuclearbomb/ex_act(severity)
-	return
+/obj/machinery/nuclearbomb/explosion_act(target_power, explosion_handler/handler)
+	return 0
 
 #define NUKERANGE 80
 /obj/machinery/nuclearbomb/proc/explode()

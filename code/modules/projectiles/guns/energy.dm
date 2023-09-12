@@ -39,6 +39,7 @@
 	. = ..()
 	if(.)
 		update_icon()
+		update_held_icon()
 
 /obj/item/gun/energy/emp_act(severity)
 	..()
@@ -115,21 +116,24 @@
 
 		if(modifystate)
 			icon_state = "[modifystate][ratio]"
+			wielded_item_state = "_doble" + "[modifystate][ratio]"
 		else
 			icon_state = "[initial(icon_state)][ratio]"
 
 		if(item_charge_meter)
 			set_item_state("-[item_modifystate][ratio]")
+			wielded_item_state = "_doble" + "-[item_modifystate][ratio]"
 	if(!item_charge_meter && item_modifystate)
 		set_item_state("-[item_modifystate]")
+		wielded_item_state = "_doble" + "-[item_modifystate]"
 	if(!ignore_inhands)
 		update_wear_icon()
 
 /obj/item/gun/energy/MouseDrop(over_object)
 	if(disposable)
-		to_chat(usr, SPAN_WARNING("[src] is a disposable, its batteries cannot be removed!."))
+		to_chat(usr, SPAN_WARNING("[src] is a disposable, its batteries cannot be removed!"))
 	else if(self_recharge)
-		to_chat(usr, SPAN_WARNING("[src] is a self-charging gun, its batteries cannot be removed!."))
+		to_chat(usr, SPAN_WARNING("[src] is a self-charging gun, its batteries cannot be removed!"))
 	else if((src.loc == usr) && istype(over_object, /obj/screen/inventory/hand) && eject_item(cell, usr))
 		cell = null
 		update_icon()
@@ -174,7 +178,7 @@
 		return
 	..()
 
-/obj/item/gun/energy/ui_data(mob/user)
+/obj/item/gun/energy/nano_ui_data(mob/user)
 	var/list/data = ..()
 	data["charge_cost"] = charge_cost
 	var/obj/item/cell/C = get_cell()

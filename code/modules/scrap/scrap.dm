@@ -80,23 +80,18 @@ GLOBAL_LIST_EMPTY(scrap_base_cache)
 				projectile.throw_at(locate(loc.x + rand(10) - 5, loc.y + rand(10) - 5, loc.z), 3, 1)
 	return INITIALIZE_HINT_QDEL
 
-/obj/structure/scrap_spawner/ex_act(severity)
-	set waitfor = FALSE
-	if(prob(25))
-		new /obj/effect/effect/smoke(src.loc)
-	switch(severity)
-		if(1)
-			new /obj/effect/scrapshot(src.loc, 1)
-			dig_amount = 0
-		if(2)
-			new /obj/effect/scrapshot(src.loc, 2)
-			dig_amount = dig_amount / 3
-		if(3)
-			dig_amount = dig_amount / 2
+/obj/structure/scrap_spawner/explosion_act(target_power, explosion_handler/handler)
+	if(target_power > 300)
+		new /obj/effect/scrapshot(src.loc, 2)
+	else
+		new /obj/effect/scrapshot(src.loc, 1)
+	dig_amount = dig_amount / 2
+	. = ..()
+	if(QDELETED(src))
+		return 0
 	if(dig_amount < 4)
 		qdel(src)
-	else
-		update_icon(TRUE)
+
 
 /obj/structure/scrap_spawner/proc/make_big_loot()
 	if(prob(big_item_chance))
@@ -398,7 +393,7 @@ GLOBAL_LIST_EMPTY(scrap_base_cache)
 		SPAWN_MECH_QUIPMENT,
 		SPAWN_POWERCELL,
 		SPAWN_ASSEMBLY,SPAWN_STOCK_PARTS,SPAWN_DESIGN_COMMON,SPAWN_COMPUTER_HARDWERE,
-		SPAWN_TOOL, SPAWN_DIVICE, SPAWN_JETPACK, SPAWN_ITEM_UTILITY,SPAWN_TOOL_UPGRADE,SPAWN_TOOLBOX,SPAWN_VOID_SUIT,
+		SPAWN_TOOL, SPAWN_DEVICE, SPAWN_JETPACK, SPAWN_ITEM_UTILITY,SPAWN_TOOL_UPGRADE,SPAWN_TOOLBOX,SPAWN_VOID_SUIT,
 		SPAWN_GUN_UPGRADE,
 		SPAWN_POUCH,
 		SPAWN_MATERIAL_BUILDING = 2,
@@ -460,7 +455,7 @@ GLOBAL_LIST_EMPTY(scrap_base_cache)
 		SPAWN_ASSEMBLY,SPAWN_STOCK_PARTS,
 		SPAWN_DESIGN_COMMON,
 		SPAWN_COMPUTER_HARDWERE,
-		SPAWN_TOOL, SPAWN_DIVICE,
+		SPAWN_TOOL, SPAWN_DEVICE,
 		SPAWN_JETPACK,
 		SPAWN_ITEM_UTILITY = 0.5,
 		SPAWN_TOOL_UPGRADE,

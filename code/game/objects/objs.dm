@@ -11,7 +11,6 @@
 	var/in_use = 0 // If we have a user using us, this will be set on. We will check if the user has stopped using us, and thus stop updating and LAGGING EVERYTHING!
 	var/damtype = "brute"
 	var/armor_divisor = 1
-	var/style_damage = 30 // used for dealing damage to slickness
 	var/corporation
 	var/heat = 0
 
@@ -28,7 +27,7 @@
 	SSnano.close_uis(src)
 	. = ..()
 
-/obj/Topic(href, href_list, var/datum/topic_state/state = GLOB.default_state)
+/obj/Topic(href, href_list, var/datum/nano_topic_state/state = GLOB.default_state)
 	if(..())
 		return 1
 
@@ -41,10 +40,10 @@
 	CouldNotUseTopic(usr)
 	return 1
 
-/obj/proc/OnTopic(mob/user, href_list, datum/topic_state/state)
+/obj/proc/OnTopic(mob/user, href_list, datum/nano_topic_state/state)
 	return TOPIC_NOACTION
 
-/obj/CanUseTopic(mob/user, datum/topic_state/state)
+/obj/CanUseTopic(mob/user, datum/nano_topic_state/state)
 	if(user.CanUseObjTopic(src))
 		return ..()
 	return STATUS_CLOSE
@@ -133,11 +132,8 @@
 			in_use = 0
 
 /obj/attack_ghost(mob/user)
-	ui_interact(user)
+	nano_ui_interact(user)
 	..()
-
-/obj/proc/interact(mob/user)
-	return
 
 /mob/proc/unset_machine()
 	src.machine = null
@@ -156,7 +152,7 @@
 
 /obj/proc/hide(hide)
 	invisibility = hide ? INVISIBILITY_MAXIMUM : initial(invisibility)
-	SEND_SIGNAL(src, COMSIG_OBJ_HIDE, hide)
+	SEND_SIGNAL_OLD(src, COMSIG_OBJ_HIDE, hide)
 
 /obj/proc/hides_under_flooring()
 	return level == BELOW_PLATING_LEVEL
@@ -179,9 +175,11 @@
 	return
 
 /obj/proc/add_hearing()
+	//InitiateHearerTracking()
 	GLOB.hearing_objects |= src
 
 /obj/proc/remove_hearing()
+	//chunkHearerClearSelf()
 	GLOB.hearing_objects.Remove(src)
 
 /obj/proc/eject_item(obj/item/I, mob/living/user)
@@ -253,9 +251,6 @@
 //Same for AP
 /obj/proc/add_projectile_penetration(newmult)
 	armor_divisor = initial(armor_divisor) + newmult
-
-/obj/proc/multiply_projectile_style_damage(newmult)
-	style_damage = initial(style_damage) * newmult
 
 /obj/proc/multiply_pierce_penetration(newmult)
 

@@ -1,4 +1,4 @@
-/obj/item/gun/projectile/automatic/dallas //it's a good way to die
+/obj/item/gun/projectile/automatic/dallas //it's a good day to die
 	name = "PAR .25 CS \"Dallas\""
 	desc = "Dallas is a pulse-action air-cooled automatic assault rifle made by unknown manufacturer. This weapon is very rare, but deadly efficient. \
 			It's used by elite mercenaries, assassins or bald marines. Uses .25 Caseless rounds."
@@ -23,10 +23,7 @@
 	penetration_multiplier = 0
 	init_recoil = LMG_RECOIL(1)
 	rarity_value = 65
-	gun_parts = list(/obj/item/part/gun = 5 ,/obj/item/stack/material/plasteel = 6)
-	wield_delay = 1 SECOND
-	wield_delay_factor = 0.4 // 40 vig for insta wield
-	gun_parts = list(/obj/item/part/gun/frame/dallas = 1, /obj/item/part/gun/grip/black = 1, /obj/item/part/gun/mechanism/machinegun = 1, /obj/item/part/gun/barrel/clrifle = 1)
+	gun_parts = list(/obj/item/part/gun/frame/dallas = 1, /obj/item/part/gun/modular/grip/black = 1, /obj/item/part/gun/modular/mechanism/machinegun = 1, /obj/item/part/gun/modular/barrel/clrifle = 1)
 
 	gun_tags = list(GUN_SILENCABLE)
 
@@ -49,8 +46,8 @@
 	name = "Dallas frame"
 	desc = "A Dallas pulse rifle frame. Sawing aliens in twain since time immemorial."
 	icon_state = "frame_dallas"
-	result = /obj/item/gun/projectile/automatic/dallas
-	grip = /obj/item/part/gun/grip/black
-	mechanism = /obj/item/part/gun/mechanism/machinegun
-	barrel = /obj/item/part/gun/barrel/clrifle
+	resultvars = list(/obj/item/gun/projectile/automatic/dallas)
+	gripvars = list(/obj/item/part/gun/modular/grip/black)
+	mechanismvar = /obj/item/part/gun/modular/mechanism/machinegun
+	barrelvars = list(/obj/item/part/gun/modular/barrel/clrifle)
 	spawn_blacklisted = TRUE

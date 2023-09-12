@@ -256,7 +256,6 @@
 	icon_state = "orange_bandana"
 	body_parts_covered = 0
 	style_coverage = COVERS_HAIR
-
 /obj/item/clothing/head/gladiator
 	name = "gladiator helmet"
 	desc = "Ave, Imperator, morituri te salutant."
@@ -280,11 +279,24 @@
 		rad = 0
 	)
 
-/obj/item/clothing/head/beret/ntsec
-	name = "Nanotrasen Security Beret"
-	desc = "A washed out and dusty corporate security beret from the long defunct NanoTrasen Corporation."
+/obj/item/clothing/head/beret/merc
+	name = "Serbian Commander beret"
+	desc = "A green beret that strikes discipline into even mercenaries."
+	icon_state = "beret_mercenary"
+	spawn_blacklisted = TRUE
+
+/obj/item/clothing/head/beret/syndicate
+	name = "ancient Syndicate beret"
+	desc = "An old beret, styled after one used by the Syndicate. Veterans and patriots love these."
+	icon_state = "syndberet"
+
+/obj/item/clothing/head/beret/syndicate/brown
+	icon_state = "syndberet2"
+
+/obj/item/clothing/head/beret/oldsec
+	name = "old security beret"
+	desc = "A washed out and dusty corporate security beret from the long defunct \"Securitech\" company."
 	icon_state = "nanoberet"
-	style = STYLE_LOW
 
 /obj/item/clothing/head/onestar
 	name = "One Star officer cap"
@@ -292,13 +304,14 @@
 	icon_state = "onestar_hat"
 	siemens_coefficient = 1
 	price_tag = 1000
-	spawn_blacklisted = TRUE // TODO: make onestar clothing/armor spawner -Valo
+	spawn_tags = SPAWN_TAG_CLOTHING_OS
+	spawn_blacklisted = TRUE
 	style = STYLE_HIGH
 	armor = list(
 		melee = 2,
-		bullet = 8,
-		energy = 8,
-		bomb = 10,
+		bullet = 10,
+		energy = 10,
+		bomb = 50,
 		bio = 5,
 		rad = 5
 	)
@@ -371,3 +384,38 @@
 		rad = 0
 	)
 	style_coverage = COVERS_WHOLE_FACE
+
+
+
+/obj/item/clothing/head/cowboy
+	name = "cowboy hat"
+	desc = "There is no sun to cover your eyes from on a spaceship, but it doesn't mean this hat is not stylish."
+	icon_state = "cowboy"
+	item_state = "cowboy"
+	style_coverage = COVERS_HAIR
+
+/obj/item/clothing/head/cowboy/white
+	name = "white cowboy hat"
+	icon_state = "cowboy_white"
+	item_state = "cowboy_white"
+
+/obj/item/clothing/head/cowboy/black
+	name = "black cowboy hat"
+	icon_state = "cowboy_black"
+	item_state = "cowboy_black"
+
+/obj/item/clothing/head/cowboy/wide
+	name = "wide cowboy hat"
+	desc = "To call this \"wide\" is an understatement."
+	icon_state = "cowboy_wide"
+	item_state = "cowboy_wide"
+
+/obj/item/clothing/head/cowboy/wide/white
+	name = "wide white cowboy hat"
+	icon_state = "cowboy_white_wide"
+	item_state = "cowboy_white_wide"
+
+/obj/item/clothing/head/cowboy/wide/black
+	name = "wide black cowboy hat"
+	icon_state = "cowboy_black_wide"
+	item_state = "cowboy_black_wide"

@@ -18,14 +18,14 @@
 	init_recoil = HANDGUN_RECOIL(0.6)
 
 	spawn_tags = SPAWN_TAG_FS_PROJECTILE
-	gun_parts = list(/obj/item/part/gun/frame/havelock = 1, /obj/item/part/gun/grip/wood = 1, /obj/item/part/gun/mechanism/revolver = 1, /obj/item/part/gun/barrel/pistol = 1)
+	gun_parts = list(/obj/item/part/gun/frame/havelock = 1, /obj/item/part/gun/modular/grip/wood = 1, /obj/item/part/gun/modular/mechanism/revolver = 1, /obj/item/part/gun/modular/barrel/pistol = 1)
 	serial_type = "FS"
 
 /obj/item/part/gun/frame/havelock
 	name = "Havelock frame"
 	desc = "A Havelock revolver frame. Personal defense in a small package."
 	icon_state = "frame_havelock"
-	result = /obj/item/gun/projectile/revolver/havelock
-	grip = /obj/item/part/gun/grip/wood
-	mechanism = /obj/item/part/gun/mechanism/revolver
-	barrel = /obj/item/part/gun/barrel/pistol
+	resultvars = list(/obj/item/gun/projectile/revolver/havelock)
+	gripvars = list(/obj/item/part/gun/modular/grip/wood)
+	mechanismvar = /obj/item/part/gun/modular/mechanism/revolver
+	barrelvars = list(/obj/item/part/gun/modular/barrel/pistol)

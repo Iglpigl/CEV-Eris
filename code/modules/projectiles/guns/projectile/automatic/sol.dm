@@ -13,7 +13,7 @@
 	auto_eject = 1
 	origin_tech = list(TECH_COMBAT = 4, TECH_MATERIAL = 2)
 	slot_flags = SLOT_BELT
-	matter = list(MATERIAL_PLASTEEL = 20, MATERIAL_PLASTIC = 12)
+	matter = list(MATERIAL_PLASTEEL = 16, MATERIAL_PLASTIC = 12)
 	price_tag = 2300
 	auto_eject_sound = 'sound/weapons/smg_empty_alarm.ogg'
 	init_recoil = CARBINE_RECOIL(1)
@@ -28,7 +28,7 @@
 		BURST_3_ROUND_RAPID
 		)
 	spawn_tags = SPAWN_TAG_FS_PROJECTILE
-	gun_parts = list(/obj/item/part/gun/frame/sol = 1, /obj/item/part/gun/grip/rubber = 1, /obj/item/part/gun/mechanism/smg = 1, /obj/item/part/gun/barrel/clrifle = 1)
+	gun_parts = list(/obj/item/part/gun/frame/sol = 1, /obj/item/part/gun/modular/grip/rubber = 1, /obj/item/part/gun/modular/mechanism/smg = 1, /obj/item/part/gun/modular/barrel/clrifle = 1)
 	serial_type = "FS"
 
 /obj/item/gun/projectile/automatic/sol/proc/update_charge()
@@ -44,15 +44,16 @@
 	..()
 
 	icon_state = initial(icon_state) + (ammo_magazine ? "-full" : "")
-	set_item_state(ammo_magazine ? "-full" : "", back = TRUE)
+	set_item_state(ammo_magazine ? "_mag" : "", hands = TRUE, back = TRUE, onsuit = TRUE)
 	cut_overlays()
+	update_wear_icon()
 	update_charge()
 
 /obj/item/part/gun/frame/sol
 	name = "Sol frame"
 	desc = "A Sol carbine frame. Ironhammer's favorite."
 	icon_state = "frame_ihbullpup"
-	result = /obj/item/gun/projectile/automatic/sol
-	grip = /obj/item/part/gun/grip/rubber
-	mechanism = /obj/item/part/gun/mechanism/smg
-	barrel = /obj/item/part/gun/barrel/clrifle
+	resultvars = list(/obj/item/gun/projectile/automatic/sol)
+	gripvars = list(/obj/item/part/gun/modular/grip/rubber)
+	mechanismvar = /obj/item/part/gun/modular/mechanism/smg // guh?? ok you do you
+	barrelvars = list(/obj/item/part/gun/modular/barrel/clrifle)

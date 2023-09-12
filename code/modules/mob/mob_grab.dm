@@ -280,7 +280,7 @@
 	if(affecting_stat > 0)
 		warmup_increase += affecting_stat ** 0.8
 	else
-		warmup_increase += affecting_stat ** 0.6
+		warmup_increase -= abs(affecting_stat) ** 0.6
 
 	var/total_warmup = max(0, UPGRADE_WARMUP + round(warmup_increase))
 
@@ -319,9 +319,10 @@
 			msg_admin_attack("[key_name(assailant)] grabbed the neck of [key_name(affecting)]")
 			hud.icon_state = "kill"
 			hud.name = "choke"
-		else
+		else if(!QDELETED(src))
 			state = GRAB_AGGRESSIVE
-			hud.icon_state = "reinforce_final"
+			if(hud)
+				hud.icon_state = "reinforce_final"
 
 	else if(state < GRAB_UPGRADING)
 		assailant.visible_message(SPAN_DANGER("[assailant] starts to tighten \his grip on [affecting]'s neck!"))
@@ -334,7 +335,6 @@
 			assailant.attack_log += "\[[time_stamp()]\] <font color='red'>Strangled (kill intent) [affecting.name] ([affecting.ckey])</font>"
 			msg_admin_attack("[key_name(assailant)] strangled (kill intent) [key_name(affecting)]")
 
-			affecting.setClickCooldown(10)
 			affecting.set_dir(WEST)
 			if(iscarbon(affecting))
 				var/mob/living/carbon/C = affecting
@@ -417,17 +417,20 @@
 						return
 					else if(hit_zone == BP_MOUTH)
 						force_vomit(affecting, assailant)
-					else 
+					else
 						var/mob/living/carbon/human/H = affecting
 						var/obj/item/organ/external/o = H.get_organ(hit_zone)
-						
+
 						if(o.status & ORGAN_BLEEDING)
 							slow_bleeding(affecting, assailant, o)
 						else
 							inspect_organ(affecting, assailant, hit_zone)
 
 				if(I_GRAB)
-					jointlock(affecting, assailant, hit_zone)
+					if(hit_zone == BP_CHEST || hit_zone == BP_GROIN)
+						swing(affecting, assailant)
+					else
+						jointlock(affecting, assailant, hit_zone)
 
 				if(I_HURT)
 					if(hit_zone == BP_EYES)
@@ -447,8 +450,8 @@
 					pin_down(affecting, assailant)
 
 	//clicking on yourself while grabbing them
-	if(M == assailant && state >= GRAB_AGGRESSIVE)
-		devour(affecting, assailant)
+	if(M == assailant)
+		fireman_throw(affecting, assailant)
 
 /obj/item/grab/dropped()
 	loc = null

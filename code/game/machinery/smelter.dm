@@ -190,8 +190,14 @@
 		CRASH("Attempted to drop an invalid material: [material]")
 
 	var/ejected_amount = min(initial(stack_type.max_amount), round(stored_material[material]), storage_capacity)
-	var/obj/item/stack/material/S = new stack_type(src, ejected_amount)
+	var/remainder = ejected_amount - round(ejected_amount)
+	var/obj/item/stack/material/S = new stack_type(src, round(ejected_amount))
+	var/shard
+	if(remainder)
+		shard = new /obj/item/material/shard(src, material, _amount = remainder)
 	eject(S, output_side)
+	if(shard)
+		eject(shard, output_side)
 	stored_material[material] -= ejected_amount
 
 
@@ -247,10 +253,10 @@
 
 
 /obj/machinery/smelter/attack_hand(mob/user as mob)
-	return ui_interact(user)
+	return nano_ui_interact(user)
 
 
-/obj/machinery/smelter/ui_data()
+/obj/machinery/smelter/nano_ui_data()
 	var/list/data = list()
 	data["currentItem"] = current_item?.name
 	data["progress"] = progress
@@ -273,8 +279,8 @@
 	return data
 
 
-/obj/machinery/smelter/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS)
-	var/list/data = ui_data()
+/obj/machinery/smelter/nano_ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = NANOUI_FOCUS)
+	var/list/data = nano_ui_data()
 
 	ui = SSnano.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)

@@ -3,7 +3,8 @@
 	icon = 'icons/obj/atmos.dmi'
 	icon_state = "yellow"
 	density = TRUE
-	var/health = 100
+	health = 100
+	maxHealth = 100
 	flags = CONDUCT
 	w_class = ITEM_SIZE_HUGE
 
@@ -284,9 +285,9 @@ update_flag
 	return src.attack_hand(user)
 
 /obj/machinery/portable_atmospherics/canister/attack_hand(var/mob/user as mob)
-	return src.ui_interact(user)
+	return src.nano_ui_interact(user)
 
-/obj/machinery/portable_atmospherics/canister/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
+/obj/machinery/portable_atmospherics/canister/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
 	if (src.destroyed)
 		return
 

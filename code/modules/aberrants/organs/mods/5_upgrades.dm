@@ -3,7 +3,6 @@
 	icon = 'icons/obj/organ_mods.dmi'
 	spawn_blacklisted = FALSE	// No RNG stats, no teratoma needed. Helps illustrate the gradual increase of weirdness from regular organs to the more bizarre aberrant organs.
 	bad_type = /obj/item/modification/organ/internal/stromal
-	price_tag = 200
 
 /obj/item/modification/organ/internal/stromal/update_icon()
 	return
@@ -60,7 +59,7 @@
 	name = "augment organoid"
 	desc = ""
 	bad_type = /obj/item/modification/organ/internal/stromal/augment
-	
+
 /obj/item/modification/organ/internal/stromal/augment/overclock
 	name = "visceral symbiont"
 	desc = "A leech-like creature that attaches itself to the viscera of an orgnanism. It mimics the function of the parent organ in exchange for blood, oxygen, and nutrients."
@@ -123,17 +122,41 @@
 	desc = "A graftable membrane for organ tissues. Contains functional tissue from one or more organs."
 	description_info = "Adds/increases organ efficiencies. Size, blood, oxygen, and nutrition requirements are based on the added efficiencies."
 	icon_state = "membrane"
-	var/organ_eff_mod = 0.1
+	var/organ_eff_mod = 0.2
 
 /obj/item/modification/organ/internal/parenchymal/New(loc, generate_organ_stats = TRUE, predefined_modifier = organ_eff_mod)
-	var/datum/component/modification/organ/M = AddComponent(/datum/component/modification/organ)
+	var/datum/component/modification/organ/parenchymal/M = AddComponent(/datum/component/modification/organ/parenchymal)
 
-	M.apply_to_types = list(/obj/item/organ/internal)
-	M.examine_msg = "Can be attached to internal organs."
-	M.examine_difficulty = STAT_LEVEL_BASIC
 	M.prefix = "multi-functional"
 	..()
 
 /obj/item/modification/organ/internal/parenchymal/large
 	name = "parenchymal membrane"
-	organ_eff_mod = 0.2
+	organ_eff_mod = 0.4
+
+// Junk loot or craftables
+/obj/item/modification/organ/internal/electromechanical
+	bad_type = /obj/item/modification/organ/internal/electromechanical
+	spawn_blacklisted = FALSE
+
+/obj/item/modification/organ/internal/electromechanical/bone_braces
+	name = "bone braces"
+	desc = "Little metal bits that bones can be reinforced with."
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "bone_braces"
+	matter = list(MATERIAL_PLASTEEL = 3)
+	price_tag = 90
+
+/obj/item/modification/organ/internal/electromechanical/bone_braces/update_icon()
+	return
+
+/obj/item/modification/organ/internal/electromechanical/bone_braces/New()
+	var/datum/component/modification/organ/stromal/M = AddComponent(/datum/component/modification/organ/stromal)
+
+	M.apply_to_types = list(/obj/item/organ/internal/bone)
+	M.examine_msg = "Can be attached to bones."
+	M.examine_difficulty = STAT_LEVEL_BASIC
+	M.prefix = "reinforced"
+
+	M.organ_efficiency_mod = list(OP_BONE = 0.33)
+	..()

@@ -54,19 +54,6 @@
 
 	device_type = /obj/item/tool/pickaxe/diamonddrill/rig
 
-/obj/item/rig_module/device/anomaly_scanner
-	name = "hardsuit anomaly scanner"
-	desc = "You think it's called an Elder Sarsparilla or something."
-	icon_state = "eldersasparilla"
-	interface_name = "Alden-Saraspova counter"
-	interface_desc = "An exotic particle detector commonly used by xenoarchaeologists."
-	engage_string = "Begin Scan"
-	usable = 1
-	selectable = 0
-	device_type = /obj/item/device/ano_scanner
-	spawn_tags = SPAWN_TAG_RIG_MODULE_COMMON
-
-
 /obj/item/rig_module/device/orescanner
 	name = "ore scanner module"
 	desc = "A clunky old ore scanner."
@@ -592,7 +579,7 @@
 	if(autodoc_processor.active)
 		autodoc_processor.stop()
 	autodoc_processor.set_patient(holder.wearer)
-	ui_interact(usr)
+	nano_ui_interact(usr)
 	return 1
 /obj/item/rig_module/autodoc/Topic(href, href_list)
 	return autodoc_processor.Topic(href, href_list)
@@ -612,8 +599,8 @@
 		passive_power_cost = 0
 		wearer_loc = null
 
-/obj/item/rig_module/autodoc/ui_interact(mob/user, ui_key, datum/nanoui/ui, force_open, datum/nanoui/master_ui, datum/topic_state/state = GLOB.deep_inventory_state)
-	autodoc_processor.ui_interact(user, ui_key, ui, force_open, state = GLOB.deep_inventory_state)
+/obj/item/rig_module/autodoc/nano_ui_interact(mob/user, ui_key, datum/nanoui/ui, force_open, datum/nanoui/master_ui, datum/nano_topic_state/state = GLOB.deep_inventory_state)
+	autodoc_processor.nano_ui_interact(user, ui_key, ui, force_open, state = GLOB.deep_inventory_state)
 /obj/item/rig_module/autodoc/activate()
 	return
 /obj/item/rig_module/autodoc/deactivate()

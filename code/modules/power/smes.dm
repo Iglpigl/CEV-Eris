@@ -272,7 +272,7 @@
 
 /obj/machinery/power/smes/attack_hand(mob/user)
 	add_fingerprint(user)
-	ui_interact(user)
+	nano_ui_interact(user)
 
 
 /obj/machinery/power/smes/attackby(var/obj/item/I, var/mob/user)
@@ -334,7 +334,7 @@
 
 	return tool_type || 1
 
-/obj/machinery/power/smes/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
+/obj/machinery/power/smes/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
 
 	if(stat & BROKEN)
 		return
@@ -423,7 +423,7 @@
 			smoke.set_up(3, 0, loc)
 			smoke.attach(src)
 			smoke.start()
-			explosion(loc, -1, 0, 1, 3, 1, 0)
+			explosion(get_turf(src), 100, 20)
 			qdel(src)
 			return
 		else if(prob(15)) //Power drain

@@ -154,7 +154,6 @@
 /obj/machinery/power/shield_generator/proc/shutdown_field()
 	for(var/obj/effect/shield/S in field_segments)
 		qdel(S)
-		CHECK_TICK
 
 	running = SHIELD_OFF
 	mitigation_em = 0
@@ -332,7 +331,7 @@
 			S.fail(1)
 
 
-/obj/machinery/power/shield_generator/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
+/obj/machinery/power/shield_generator/nano_ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = NANOUI_FOCUS)
 	var/data[0]
 
 	data["running"] = running
@@ -385,7 +384,7 @@
 
 
 /obj/machinery/power/shield_generator/attack_hand(var/mob/user)
-	ui_interact(user)
+	nano_ui_interact(user)
 	if(panel_open)
 		wires.Interact(user)
 
@@ -466,7 +465,7 @@
 		log_event(EVENT_RECONFIGURED, src)
 		. = 1
 
-	ui_interact(usr)
+	nano_ui_interact(usr)
 
 /obj/machinery/power/shield_generator/proc/field_integrity()
 	if(max_energy)
@@ -475,7 +474,7 @@
 
 
 // Takes specific amount of damage
-/obj/machinery/power/shield_generator/proc/take_damage(var/damage, var/shield_damtype, var/atom/damager = null)
+/obj/machinery/power/shield_generator/proc/take_shield_damage(var/damage, var/shield_damtype, var/atom/damager = null)
 	var/energy_to_use = damage * ENERGY_PER_HP
 
 	// Even if the shield isn't currently modulating, it can still use old modulation buildup to reduce damage

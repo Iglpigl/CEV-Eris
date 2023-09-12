@@ -1,3 +1,4 @@
+//NO new variables here, might as well not even have this category, many guns outside /automatic use automatic firemodes
 /obj/item/gun/projectile/automatic
 	name = "automatic projectile gun"
 	desc = "A debug firearm, which should be reported if present in-game. Uses 9mm rounds."
@@ -15,7 +16,7 @@
 	unload_sound = 'sound/weapons/guns/interact/smg_magout.ogg'
 	reload_sound = 'sound/weapons/guns/interact/smg_magin.ogg'
 	cocked_sound = 'sound/weapons/guns/interact/smg_cock.ogg'
-	zoom_factor = 0 //Default zoom factor you want on all automatic weapons.
+	zoom_factors = list() //Default zoom factor you want on all automatic weapons.
 	bad_type = /obj/item/gun/projectile/automatic
 	gun_parts = list(/obj/item/part/gun = 3 ,/obj/item/stack/material/steel = 15)
 	init_firemodes = list(

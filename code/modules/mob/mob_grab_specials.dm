@@ -10,10 +10,19 @@
 	user.visible_message(SPAN_NOTICE("[user] starts inspecting [affecting]'s [E.name] carefully."))
 	if(!do_mob(user,H, 10))
 		to_chat(user, SPAN_NOTICE("You must stand still to inspect [E] for wounds."))
-	else if(E.wounds.len)
-		to_chat(user, SPAN_WARNING("You find [E.get_wounds_desc()]"))
 	else
-		to_chat(user, SPAN_NOTICE("You find no visible wounds."))
+		var/wound_found = FALSE
+
+		if(E.wounds.len)
+			to_chat(user, SPAN_WARNING("You find [E.get_wounds_desc()]"))
+			wound_found = TRUE
+
+		if(E.number_internal_wounds)
+			to_chat(user, SPAN_WARNING("You find evidence of one or more internal injuries."))
+			wound_found = TRUE
+
+		if(!wound_found)
+			to_chat(user, SPAN_NOTICE("You find no visible wounds."))
 	if(locate(/obj/item/material/shard/shrapnel) in E.implants)
 		to_chat(user, SPAN_WARNING("There is what appears to be shrapnel embedded within [affecting]'s [E.name]."))
 
@@ -84,7 +93,7 @@
 	var/obj/item/organ/external/organ = target.get_organ(check_zone(target_zone))
 	if(!organ || organ.nerve_struck == -1)
 		return
-
+	visible_message(SPAN_WARNING("[attacker] tries to put [target]'s [organ.name] into a jointlock."))
 	if(!do_after(attacker, 7 SECONDS, target))
 		to_chat(attacker, SPAN_WARNING("You must stand still to jointlock [target]!"))
 	else
@@ -134,7 +143,6 @@
 	//deal damage AFTER the kick
 	var/damage = max(1, min(30, (attacker.stats.getStat(STAT_ROB) / 3)))
 	target.damage_through_armor(damage, BRUTE, BP_CHEST, ARMOR_MELEE)
-	attacker.regen_slickness()
 	//admin messaging
 	attacker.attack_log += text("\[[time_stamp()]\] <font color='red'>Dropkicked [target.name] ([target.ckey])</font>")
 	target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Dropkicked by [attacker.name] ([attacker.ckey])</font>")
@@ -158,7 +166,6 @@
 		attacker.Weaken(2)
 		target.Stun(6)
 		playsound(loc, 'sound/weapons/jointORbonebreak.ogg', 50, 1, -1)
-		attacker.regen_slickness()
 		//admin messaging
 		attacker.attack_log += text("\[[time_stamp()]\] <font color='red'>Suplexed [target.name] ([target.ckey])</font>")
 		target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Suplexed by [attacker.name] ([attacker.ckey])</font>")
@@ -240,26 +247,80 @@
 	attacker.set_dir(EAST) //face the victim
 	target.set_dir(SOUTH) //face up
 
-/obj/item/grab/proc/devour(mob/target, mob/user)
-	var/can_eat
-	var/mob/living/carbon/human/H = user
-	if(istype(H) && H.species.gluttonous && (iscarbon(target) || isanimal(target)))
-		if(H.species.gluttonous == GLUT_TINY && (target.mob_size <= MOB_TINY) && !ishuman(target)) // Anything MOB_TINY or smaller
-			can_eat = 1
-		else if(H.species.gluttonous == GLUT_SMALLER && (H.mob_size > target.mob_size)) // Anything we're larger than
-			can_eat = 1
-		else if(H.species.gluttonous == GLUT_ANYTHING) // Eat anything ever
-			can_eat = 2
+/obj/item/grab/proc/fireman_throw(mob/living/carbon/human/target, mob/living/carbon/human/attacker)//in short, suplex + irish whip
+	if(state < GRAB_AGGRESSIVE)//blue grab check
+		to_chat(attacker, SPAN_WARNING("You require a better grab to do this."))
+		return
+	visible_message(SPAN_DANGER("[attacker] lifts [target] over the shoulders, just to drop \him behind!" ))
+	target.SpinAnimation(5,1)
+	var/fireman_dir = (get_dir(target, attacker))
+	if(attacker.loc == target.loc) // if we are on the same tile(e.g. neck grab), turn the direction to still push them away
+		fireman_dir = turn(attacker.dir, 180)
+	var/damage = max(1, min(20, (attacker.stats.getStat(STAT_ROB) / 3)))
 
-	if(can_eat)
-		var/mob/living/carbon/attacker = user
-		user.visible_message(SPAN_DANGER("[user] is attempting to devour [target]!"))
-		if(can_eat == 2)
-			if(!do_mob(user, target, 30)) return
-		else
-			if(!do_mob(user, target, 100)) return
-		user.visible_message(SPAN_DANGER("[user] devours [target]!"))
-		admin_attack_log(attacker, target, "Devoured.", "Was devoured by.", "devoured")
-		target.loc = user
-		attacker.stomach_contents.Add(target)
-		qdel(src)
+	target.loc = attacker.loc
+	attacker.drop_from_inventory(src)
+	loc = null
+	qdel(src)
+	target.update_lying_buckled_and_verb_status()
+
+	if(!istype(get_step(attacker, fireman_dir), /turf/simulated/wall))
+		target.forceMove(get_step(target, fireman_dir))
+
+	target.damage_through_armor(damage, HALLOSS, BP_CHEST, ARMOR_MELEE)
+
+	target.Weaken(1)
+	playsound(loc, 'sound/weapons/jointORbonebreak.ogg', 50, 1, -1)
+
+	attacker.attack_log += text("\[[time_stamp()]\] <font color='red'>Fireman-thrown [target.name] ([target.ckey])</font>")
+	target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Fireman-thrown by [attacker.name] ([attacker.ckey])</font>")
+	msg_admin_attack("[key_name(attacker)] has fireman-thrown [key_name(target)]")
+
+/obj/item/grab/proc/swing(mob/living/carbon/human/target, mob/living/carbon/human/attacker)
+	if(state < GRAB_NECK) //red grab check
+		to_chat(attacker, SPAN_WARNING("You require a better grab to do this."))
+		return
+	if(!target.lying)
+		to_chat(attacker, SPAN_WARNING("\The [target] needs to be on the ground to do this."))
+		return
+	var/free_space = TRUE//if there are walls or structures around us, we can't do this.
+	for (var/turf/T in range(1, attacker.loc))
+		if(istype(T, /turf/simulated/wall))
+			free_space = FALSE
+		if(!T.Enter(attacker))
+			free_space = FALSE
+	if(!free_space)
+		to_chat(attacker, SPAN_WARNING("There is not enough space around you to do this."))
+		return
+	//finally, we SWING
+	target.loc = attacker.loc
+	visible_message(SPAN_DANGER("[attacker] pivots, spinning [target] around!"))
+	attacker.next_move = world.time + 30 //3 seconds
+	var/spin = 2
+	var/damage = 30
+	var/dir = attacker.dir
+	if(dir & NORTH || dir & SOUTH)
+		dir = turn(dir, 90)
+	while(spin < 10 && target)//while we have a grab
+		step_glide(target, dir,(DELAY2GLIDESIZE(0.2 SECONDS)))//very fast
+		if((spin % 2) == 0)
+			dir = turn(dir, 90)
+		spin++
+		damage += 5
+		for(var/mob/living/L in get_step(target, dir))
+			visible_message(SPAN_DANGER("[target] collides with [L], pushing \him on the ground!"))
+			L.Weaken(4)
+		attacker.set_dir(dir)
+		sleep(1)
+
+	target.throw_at(get_edge_target_turf(target, dir), 7, 2)//this is very fast, and very painful for any obstacle involved
+	target.damage_through_armor(damage, HALLOSS, armor_divisor = 2)
+
+	//admin messaging
+	attacker.attack_log += text("\[[time_stamp()]\] <font color='red'>Swung [target.name] ([target.ckey])</font>")
+	target.attack_log += text("\[[time_stamp()]\] <font color='orange'>Swung by [attacker.name] ([attacker.ckey])</font>")
+	msg_admin_attack("[key_name(attacker)] has swung [key_name(target)]")
+	//kill the grab
+	attacker.drop_from_inventory(src)
+	loc = null
+	qdel(src)
