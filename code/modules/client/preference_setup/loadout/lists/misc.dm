@@ -22,7 +22,7 @@
 
 /datum/gear/dice
 	display_name = "dice pack"
-	path = /obj/item/storage/box/dice
+	path = /obj/item/storage/pill_bottle/dice
 
 /datum/gear/cards
 	display_name = "deck of cards"
